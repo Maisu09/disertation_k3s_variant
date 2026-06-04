@@ -16,6 +16,11 @@ spec:
       containers:
         - name: cadvisor
           image: gcr.io/cadvisor/cadvisor:latest
+          args:
+            - --housekeeping_interval=5s
+            - --docker_only=false
+            - --store_container_labels=true
+            - --containerd=/run/k3s/containerd/containerd.sock
           ports:
             - containerPort: 8080
           securityContext:
@@ -36,6 +41,9 @@ spec:
             - name: dev-disk
               mountPath: /dev/disk
               readOnly: true
+            - name: containerd
+              mountPath: /run/k3s/containerd
+              readOnly: false
       volumes:
         - name: rootfs
           hostPath:
@@ -52,3 +60,6 @@ spec:
         - name: dev-disk
           hostPath:
             path: /dev/disk
+        - name: containerd
+          hostPath:
+            path: /run/k3s/containerd
